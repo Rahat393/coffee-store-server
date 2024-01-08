@@ -7,7 +7,8 @@
   const port = process.env.PORT || 5000;
 
 //   middleware
-
+app.use(cors());
+app.use(express.json());
 
  
 
@@ -26,6 +27,16 @@ async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
+
+    const coffeeCollection = client.db('coffeeDB').collection('coffee')
+
+    app.post('/add', async (req, res) => {
+      const data = req.body;
+      console.log(data);
+      const result = await coffeeCollection.insertOne(data);
+      res.send(result)
+    })
+     
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
